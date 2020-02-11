@@ -15,19 +15,25 @@ router.post('/sign-up', async function(req, res, next) {
   let message= "";
   let userAlreadyExist = await userModel.findOne( {$or:[{username:req.body.username},{email: req.body.email}]} ) 
   if(userAlreadyExist==null) {
+
+    bcrypt.hash(req.body.password, saltRounds, async function(err, hash) {
+   
       var newUser = new userModel({
         username: req.body.username,
         email: req.body.email,
-        password: req.body.password,
+        password: hash,
       }
     )
     var userSaved = await newUser.save();
+
+  })
     result = true;
     message = "inscription réussie"
 
-    }
+
+  }
   else {
-    message = 'user ou mot de passe déjà pris'
+    message = 'username ou mot de passe déjà pris'
   }
   res.send({result,message});
 });
@@ -35,25 +41,39 @@ router.post('/sign-up', async function(req, res, next) {
 
 
 router.post('/sign-in', async function(req, res, next) {
-  let result = false;
-  console.log("body",req.body)
+  var result = false;
+  var message= "";
+
   var checkUser = await userModel.findOne(
     { email: req.body.email,
-      password: req.body.password,
+      // password: req.body.password,
      }
  )
-     console.log("checkbefore",checkUser)
+ console.log("checkuser",checkUser);
+  
      if(checkUser !== null) {
-       result = true
-       message = "connexion réussie"
+
+      await bcrypt.compare(req.body.password, checkUser.password, function(err, test) {
+
+        if (test == true) {
+          result = true
+          message = "connexion réussie"
+          res.send({result,message});
+
+        } else {
+          result = false;
+          message = "mot de passe incorrect";
+          res.send({result,message});
+
+      }});
 
       } 
      else {
        result = false;
-       message = "mot de passe ou non d'utilisateur non reconnus"
+       message = "nom d'utilisateur non reconnu"
+       res.send({result,message});
      }
-  console.log("checkUser",checkUser)
-  res.send({result,message});
+
 });
 
 

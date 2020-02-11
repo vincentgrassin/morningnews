@@ -17,25 +17,32 @@ function ScreenHome() {
   const [passwordSignIn,setPasswordSignIn] = useState("");
   const [messageSignIn,setMessageSignIn] = useState("");
 
-
 //gestion sign up
 
   var handleSignUp = async () =>{
+    let regexMail = new RegExp(/^[a-zA-Z0-9._-]+@[a-z0-9._-]{2,}.[a-z]{2,4}$/);
     if((email=="")||(password=="")||(userName=="")) {
       setMessageSignUp("Champs requis !")
-
     }
-    else {
-      let data = await fetch("/sign-up",{
-        method: 'POST',
-        headers: {'Content-Type':'application/x-www-form-urlencoded'},
-        body: `email=${email}&password=${password}&username=${userName}`
-      });
 
-      let dataJson = await data.json();
-      setIsLogged(dataJson.result);
-      setMessageSignUp(dataJson.message);
-      console.log(dataJson)
+    else {
+      var regexTest = regexMail.test(email);
+      if(regexTest==true) {
+        let data = await fetch("/sign-up",{
+          method: 'POST',
+          headers: {'Content-Type':'application/x-www-form-urlencoded'},
+          body: `email=${email}&password=${password}&username=${userName}`
+        });
+  
+        let dataJson = await data.json();
+        setIsLogged(dataJson.result);
+        setMessageSignUp(dataJson.message);
+        console.log(dataJson)
+      }
+      else {
+        setMessageSignUp("Veuillez renseigner une adresse mail valide")
+      }
+
     }
   }
 
@@ -78,7 +85,7 @@ function ScreenHome() {
             {/* SIGN-IN */}
 
             <div className="Sign">
-                    {isLogged? <div></div>: <div>{messageSignIn}</div>}
+                    {isLogged? <div></div>: <div style = {{color:"white"}}>{messageSignIn}</div>}
                     <Input className="Login-input" placeholder="arthur@lacapsule.com" 
                     onChange={(e) => setEmailSignIn(e.target.value)} 
                     value={emailSignIn}/>
@@ -94,7 +101,7 @@ function ScreenHome() {
             {/* SIGN-UP */}
 
             <div className="Sign">
-                  {isLogged? <div></div>: <div>{messageSignUp}</div>}
+                  {isLogged? <div></div>: <div style = {{color:"white"}}>{messageSignUp}</div>}
 
                     <Input className="Login-input" placeholder="email" 
                     onChange={(e) => setEmail(e.target.value)} 
