@@ -1,0 +1,120 @@
+import React, {useState,useEffect} from 'react';
+import './App.css';
+import {Input,Button} from 'antd';
+import {Redirect } from 'react-router-dom'
+
+
+function ScreenHome() {
+
+  const [isLogged,setIsLogged] = useState(false);
+  //state sign up
+  const [email,setEmail] = useState("");
+  const [password,setPassword] = useState("");
+  const [userName,setUserName] = useState("");
+  const [messageSignUp,setMessageSignUp] = useState("");
+  //state sign in
+  const [emailSignIn,setEmailSignIn] = useState("");
+  const [passwordSignIn,setPasswordSignIn] = useState("");
+  const [messageSignIn,setMessageSignIn] = useState("");
+
+
+//gestion sign up
+
+  var handleSignUp = async () =>{
+    if((email=="")||(password=="")||(userName=="")) {
+      setMessageSignUp("Champs requis !")
+
+    }
+    else {
+      let data = await fetch("/sign-up",{
+        method: 'POST',
+        headers: {'Content-Type':'application/x-www-form-urlencoded'},
+        body: `email=${email}&password=${password}&username=${userName}`
+      });
+
+      let dataJson = await data.json();
+      setIsLogged(dataJson.result);
+      setMessageSignUp(dataJson.message);
+      console.log(dataJson)
+    }
+  }
+
+//gestion sign in
+
+  var handleSignIn = async () =>{
+    if((emailSignIn=="")||(passwordSignIn=="")) {
+      setMessageSignIn("Champs requis !")
+
+    }
+    else {
+      let data = await fetch("/sign-in",{
+        method: 'POST',
+        headers: {'Content-Type':'application/x-www-form-urlencoded'},
+        body: `email=${emailSignIn}&password=${passwordSignIn}`
+      });
+
+      let dataJson = await data.json();
+      setIsLogged(dataJson.result);
+      setMessageSignIn(dataJson.message)
+      console.log(dataJson)
+    }
+  }
+
+  if(isLogged == true) {
+
+    return(
+      <Redirect to='/screensource' />
+    )
+  
+  }
+  else {
+
+    
+    return (
+
+
+      <div className="Login-page" >
+
+            {/* SIGN-IN */}
+
+            <div className="Sign">
+                    {isLogged? <div></div>: <div>{messageSignIn}</div>}
+                    <Input className="Login-input" placeholder="arthur@lacapsule.com" 
+                    onChange={(e) => setEmailSignIn(e.target.value)} 
+                    value={emailSignIn}/>
+                    <Input.Password className="Login-input" placeholder="password" 
+                    onChange={(e) => setPasswordSignIn(e.target.value)} 
+                    value={passwordSignIn} />
+              
+
+              <Button style={{width:'80px'}} type="primary" onClick={()=> handleSignIn() }>Sign-in</Button>
+
+            </div>
+
+            {/* SIGN-UP */}
+
+            <div className="Sign">
+                  {isLogged? <div></div>: <div>{messageSignUp}</div>}
+
+                    <Input className="Login-input" placeholder="email" 
+                    onChange={(e) => setEmail(e.target.value)} 
+                    value={email}/>
+                    
+                    <Input className="Login-input" placeholder="username" 
+                    onChange={(e) => setUserName(e.target.value)} 
+                    value={userName}/>
+
+                    <Input.Password className="Login-input" placeholder="password"
+                    onChange={(e) => setPassword(e.target.value)} 
+                    value={password} />
+              
+
+              <Button style={{width:'80px'}} type="primary" onClick={()=> handleSignUp() }>Sign-up</Button>
+
+            </div>
+
+        </div>
+    );
+  }
+}
+export default ScreenHome;
