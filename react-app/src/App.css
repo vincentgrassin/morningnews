@@ -1,6 +1,17 @@
 
 @import '~antd/dist/antd.css';
 
+.card-item:hover{
+  background-color:rgb(218, 213, 213);
+  opacity: 0.95;
+}
+
+.ant-card-actions{
+  margin-top:auto;
+
+}
+
+
 h4 {
   color: white;
   font-weight: bold
@@ -54,6 +65,16 @@ h4 {
   background-repeat: no-repeat;
   background-size: cover;
   opacity: 0.8;
+  position:relative
+}
+
+.flags{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  position: absolute;
+  top: 70px;
+  width: 100%;
 }
 
 .Card{

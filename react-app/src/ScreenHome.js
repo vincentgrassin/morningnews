@@ -1,10 +1,12 @@
 import React, {useState,useEffect} from 'react';
 import './App.css';
 import {Input,Button} from 'antd';
-import {Redirect } from 'react-router-dom'
+import {Redirect } from 'react-router-dom';
+import {connect} from 'react-redux';
 
 
-function ScreenHome() {
+
+function ScreenHome(props) {
 
   const [isLogged,setIsLogged] = useState(false);
   //state sign up
@@ -17,16 +19,16 @@ function ScreenHome() {
   const [passwordSignIn,setPasswordSignIn] = useState("");
   const [messageSignIn,setMessageSignIn] = useState("");
 
-//gestion sign up
-
+//gestion sign up >>>> envoi au back les champs de signup (récupéré par button) et met à jour les états (islogin, message et token)
   var handleSignUp = async () =>{
-    let regexMail = new RegExp(/^[a-zA-Z0-9._-]+@[a-z0-9._-]{2,}.[a-z]{2,4}$/);
     if((email=="")||(password=="")||(userName=="")) {
       setMessageSignUp("Champs requis !")
     }
 
     else {
+      let regexMail = new RegExp(/^[a-zA-Z0-9._-]+@[a-z0-9._-]{2,}.[a-z]{2,4}$/);
       var regexTest = regexMail.test(email);
+
       if(regexTest==true) {
         let data = await fetch("/sign-up",{
           method: 'POST',
@@ -36,8 +38,10 @@ function ScreenHome() {
   
         let dataJson = await data.json();
         setIsLogged(dataJson.result);
-        setMessageSignUp(dataJson.message);
-        console.log(dataJson)
+        setMessageSignUp(dataJson.message); // recupere message de log
+        props.saveToken(dataJson.tokenUser); //enregistre le token dans le store
+        console.log("signup Json",dataJson)
+
       }
       else {
         setMessageSignUp("Veuillez renseigner une adresse mail valide")
@@ -46,12 +50,10 @@ function ScreenHome() {
     }
   }
 
-//gestion sign in
-
+//gestion sign in >>>> envoi au back les champs de signin (récupéré par button) et met à jour les états (islogin, message et token)
   var handleSignIn = async () =>{
     if((emailSignIn=="")||(passwordSignIn=="")) {
       setMessageSignIn("Champs requis !")
-
     }
     else {
       let data = await fetch("/sign-in",{
@@ -63,22 +65,22 @@ function ScreenHome() {
       let dataJson = await data.json();
       setIsLogged(dataJson.result);
       setMessageSignIn(dataJson.message)
-      console.log(dataJson)
+      props.saveToken(dataJson.tokenUser);
+      console.log("signin Json",dataJson)
     }
   }
 
-  if(isLogged == true) {
 
+
+  // RETURN GLOBAL DE LA PAGE
+
+  if(isLogged == true) {
     return(
       <Redirect to='/screensource' />
     )
-  
   }
   else {
-
-    
     return (
-
 
       <div className="Login-page" >
 
@@ -124,4 +126,30 @@ function ScreenHome() {
     );
   }
 }
-export default ScreenHome;
+
+
+
+//envoi action & data aux reducers
+function mapDispatchToProps(dispatch) {
+  return {
+    saveToken: function(token) { 
+      dispatch( {
+        type: 'save-token',
+        token:token,
+    } ) 
+  }
+
+  }
+}
+
+//recup varible du store 
+function mapStateToProps(state) {
+  return { 
+    token: state.token,
+  }
+}
+
+export default connect(
+  mapStateToProps, 
+  mapDispatchToProps
+)(ScreenHome);

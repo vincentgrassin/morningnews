@@ -5,7 +5,8 @@ var mongoose = require ('./bdd') // on recupere ce qui est exporté par bdd
     username: String,
     password: String,
     email:String,
-
+    salt:String, // nécessaire pour cryptage avec crypt js (pas avec bcrypt)
+    token:String,
 });
 
 
