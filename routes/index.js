@@ -111,24 +111,33 @@ router.post('/sign-in', async function(req, res, next) {
 router.post('/add-article', async function(req,res,next){
 
     var userAddArticle = await userModel.findOne({token:req.body.token}).populate('articles').exec();
-    
+    var listeArticle = await articleModel.findOne({title:req.body.title})
     var isInWishListDb = false;
     for(let i =0;i<userAddArticle.articles.length;i++) {
         if(req.body.title == userAddArticle.articles[i].title) {
           isInWishListDb = true;
          }
       }
-    if(isInWishListDb==false) {
-    var newArticle = new articleModel({
-      title: req.body.title,
-      description: req.body.description,
-      img: req.body.img,
-      url: req.body.url   
-  })
 
-    var articleSaved = await newArticle.save();
+    if(isInWishListDb==false) {
+      var idArticles;
+      if(listeArticle==null) {
+        var newArticle = new articleModel({
+          title: req.body.title,
+          description: req.body.description,
+          img: req.body.img,
+          url: req.body.url   
+      })
+    
+        var articleSaved = await newArticle.save();
+        idArticles = articleSaved._id
+        console.log("TCL: idArticles", idArticles)
+
+      } else {
+        var idArticle = listeArticle._id
+      }
     var array = userAddArticle.articles;
-    array.push(articleSaved._id);
+    array.push(idArticle);
     await userModel.updateOne({_id:userAddArticle._id},{articles:array})
 
   
