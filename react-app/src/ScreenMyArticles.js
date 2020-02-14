@@ -36,7 +36,9 @@ var removeWishList = async (id) =>{
   
 });
 var dataWishList = await data.json();
-setWishListUser(dataWishList.articles)
+console.log("json",dataWishList)
+console.log("delete fetch",dataWishList.userDeleteArticle.articles)
+setWishListUser(dataWishList.userDeleteArticle.articles)
 }
 
 console.log("wl",wishListUser)
