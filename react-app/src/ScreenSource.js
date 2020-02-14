@@ -13,9 +13,20 @@ function ScreenSource(props) {
   const [language,setLanguage] = useState(props.language);
 // charge la page avec les sources à chaque changement de language
 
-console.log(props.token);
-  useEffect( ()=> {
-    console.log(props.language);
+useEffect( ()=> {
+  async function getLanguage() {
+  var data = await fetch('/langue', { 
+    method: 'POST',
+    headers: {'Content-Type':'application/x-www-form-urlencoded'},
+    body: `token=${props.token}`
+  });
+  var dataJson = await data.json();
+  console.log(dataJson)
+}
+  getLanguage();
+},[])
+
+useEffect( ()=> {
     async function apiNews () {var sourceDataAPI = await fetch(`https://newsapi.org/v2/sources?apiKey=a160ccf8b17f40afb9cfb3119f82d1eb&country=${language}`);
     var sourceData = await sourceDataAPI.json();  
     setSources(sourceData.sources);
@@ -40,6 +51,8 @@ console.log(props.token);
 
 //gère la langue 
 var LanguageChange = (lg) =>{
+
+
   setLanguage(lg)
   props.Language(lg)
 }

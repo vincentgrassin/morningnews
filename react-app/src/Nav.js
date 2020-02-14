@@ -7,6 +7,8 @@ import {connect} from 'react-redux';
 
 function Nav(props) {
 
+  
+
   return (
     <nav >
       <Menu style={{textAlign: 'center'}} mode="horizontal" theme="dark">
