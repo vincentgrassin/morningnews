@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var userModel = require('../models/user');
+var articleModel = require ('../models/article');
 
 //Bcrypt config
   // const bcrypt = require('bcrypt');
@@ -105,6 +106,24 @@ router.post('/sign-in', async function(req, res, next) {
      res.send({result,message,tokenUser});
 
 });
+
+// Route pour récupérer le POST des différents article ajouté
+router.post('/add-article', async function(req,res,next){
+    var newArticle = new articleModel({
+      title: req.body.title,
+      description: req.body.description,
+      img: req.body.img,
+      url: req.body.url   
+  })
+  var articleSaved = await newArticle.save();
+  var userAddArticle = await userModel.findOne(req.body.token) //On récupére le token de l'utilisateur pour lui pusher les ID des articles
+  console.log("TCL: userAddArticle", userAddArticle)
+  
+  userAddArticle.articles.push(articleSaved._id)
+
+
+});
+
 
 
 module.exports = router;
