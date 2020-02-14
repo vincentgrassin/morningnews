@@ -55,10 +55,14 @@ function ScreenArticlesBySource(props) {
 
 
 // gerer les boutons rouges
-useEffect(async () => {
+useEffect( () => {
+  async function getWishList () {
   var data = await fetch("/wishlist-article");
   var dataWishList = await data.json();
   console.log("dataWL",dataWishList)
+   
+  }
+  getWishList(); 
 },[])
 
 

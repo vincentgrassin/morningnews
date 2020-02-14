@@ -26,10 +26,14 @@ function ScreenMyArticles(props) {
 
 // appel à la liste des article en WL
 
-useEffect(async () => {
-  var data = await fetch("/wishlist-article");
-  var dataWishList = await data.json();
-  console.log("dataWL",dataWishList)
+useEffect(() => {
+  async function getWishList () {
+    var data = await fetch("/wishlist-article");
+    var dataWishList = await data.json();
+    console.log("dataWL",dataWishList)
+  
+  }
+  getWishList(); 
 },[])
 
 
