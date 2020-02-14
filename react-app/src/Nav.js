@@ -7,7 +7,7 @@ import {connect} from 'react-redux';
 
 function Nav(props) {
 
-  var changeLangue = () => {
+  var changeLangue = async () => {
     await fetch('/logout', { 
         method: 'POST',
         headers: {'Content-Type':'application/x-www-form-urlencoded'},
