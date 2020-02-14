@@ -184,7 +184,7 @@ router.post('/wishlist-article', async function(req, res, next) {
 
 router.post('/langue', async function (req,res,next) {
   var userLangue  = await userModel.findOne({token:req.body.token})
-  console.log("TCL: userLangue", userLangue)
+  console.log("TCL: userLangue", userLangue.langue)
   
   res.json({langue:userLangue.langue})
 })
