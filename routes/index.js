@@ -30,7 +30,8 @@ router.post('/sign-up', async function(req, res, next) {
       email: req.body.email,
       password: SHA256(req.body.password + salt).toString(encBase64),
       salt:salt,
-      token:uid2(32)
+      token:uid2(32),
+      langue:"fr"
     }
   )
   var userSaved = await newUser.save();
@@ -181,6 +182,11 @@ router.post('/wishlist-article', async function(req, res, next) {
   res.json({articles:userConnected.articles});
 });
 
-
+router.post('/langue', async function (req,res,next) {
+  var userLangue  = await userModel.findOne({token:req.body.token})
+  console.log("TCL: userLangue", userLangue.langue)
+  
+  res.json({langue:userLangue.langue})
+})
 
 module.exports = router;
