@@ -52,19 +52,24 @@ function ScreenArticlesBySource(props) {
 
 
 
-
-
 // gerer les boutons rouges
-useEffect( () => {
+const [wishListUser,setWishListUser] = useState([])
+useEffect(() => {
   async function getWishList () {
-  var data = await fetch("/wishlist-article");
-  var dataWishList = await data.json();
-  console.log("dataWL",dataWishList)
-   
+    var data = await fetch('/wishlist-article', { 
+      method: 'POST',
+      headers: {'Content-Type':'application/x-www-form-urlencoded'},
+      body: `token=${props.token}`
+    });
+    
+    var dataWishList = await data.json();
+   setWishListUser(dataWishList.articles)
+  
   }
   getWishList(); 
 },[])
 
+console.log(wishListUser)
 
 // GERER LA MODAL
 
@@ -98,23 +103,22 @@ var handleCancel = (e) => {
 // CREER LA LISTE DE CARDS INCLUANT LA MODAL
 
  let articleDetails = sourcesDetails.map((obj,i) => {
-
-      // var isInWishLIist = false; 
-      // for(let j=0;j<props.wishList.length;j++){
-      //   if(props.wishList[j].title==obj.title){
-      //     isInWishLIist = true
-      //   }
-      // }
-      // var styleLike;
-      // if(isInWishLIist == true) {
-      //   var styleLike = {
-      //     // cursor:"pointer",
-      //     color:"red"
-      // }} else {
-      //       styleLike = {
-      //         cursor:"pointer",
-      //       }
-      //   }
+      var isInWishLIist = false; 
+      for(let j=0;j<wishListUser.length;j++){
+        if(wishListUser[j].title==obj.title){
+          isInWishLIist = true
+        }
+      }
+      var styleLike;
+      if(isInWishLIist == true) {
+        var styleLike = {
+          cursor:"pointer",
+          color:"red"
+      }} else {
+            styleLike = {
+              cursor:"pointer",
+            }
+        }
       
       return(
       <div  key = {i} style={{display:'flex',justifyContent:'center'}}>
@@ -139,7 +143,7 @@ var handleCancel = (e) => {
         />
         }
         actions={[
-            <Icon type="like" key="ellipsis" /*style = {styleLike}*/  onClick= {() => AddtoWishList(props.token,obj.title,obj.description,obj.urlToImage,obj.url,true)}/>,
+            <Icon type="like" key="ellipsis" style = {styleLike}  onClick= {() => AddtoWishList(props.token,obj.title,obj.description,obj.urlToImage,obj.url,true)}/>,
             <Icon type="read" key="ellipsis2" style = {{cursor:"pointer"}}  onClick= {() => showModal(obj.title,obj.description,obj.urlToImage,obj.url)}/>,
         ]}
       >
