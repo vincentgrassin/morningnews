@@ -31,6 +31,7 @@ useEffect(() => {
 
 // delete de la wishlist à la liste des article en WL
 var removeWishList = async (title) =>{ 
+  console.log("delete",title,props.token);
   await fetch(`/wishlist-article/${title}/${props.token}`, {
   method: 'DELETE'
 });
