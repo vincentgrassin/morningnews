@@ -189,4 +189,8 @@ router.post('/langue', async function (req,res,next) {
   res.json({langue:userLangue.langue})
 })
 
+router.post('/logout', async function (req,res,next){
+  var userLogout = await userModel.updateOne({token:req.body.token},{langue:req.body.language})
+})
+
 module.exports = router;
