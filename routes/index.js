@@ -147,6 +147,17 @@ router.post('/add-article', async function(req,res,next){
 });
 
 
+// Route Delete pour suprimer un article de la wishList
+
+router.delete('/wishlist-article/:title/:token', async function (req,res,next){
+  var userDeleteArticle = await userModel.findOne({token:req.params.token})
+  console.log("TCL: userDeleteArticle", userDeleteArticle)
+  
+
+  
+})
+
+
 router.post('/wishlist-article', async function(req, res, next) {
   var userConnected = await userModel.findOne({token:req.body.token}).populate('articles').exec();
 
