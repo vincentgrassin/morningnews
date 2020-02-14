@@ -31,7 +31,7 @@ useEffect(() => {
 // delete de la wishlist à la liste des article en WL
 var removeWishList = async (id) =>{ 
   console.log("delete",id,props.token);
-  await fetch(`/wishlist-article/${id}/${props.token}`, {
+ var data = await fetch(`/wishlist-article/${id}/${props.token}`, {
   method: 'DELETE'
   
 });
@@ -39,6 +39,7 @@ var dataWishList = await data.json();
 setWishListUser(dataWishList.articles)
 }
 
+console.log("wl",wishListUser)
 
 // Génère la liste de mes articles 
   let articleWishLIst = wishListUser.map((obj,i) => {

@@ -159,7 +159,7 @@ router.delete('/wishlist-article/:_id/:token', async function (req,res,next){
   array.splice(index,1);
   console.log("TCL: array après Splice", array)
   
-  await userDeleteArticle.updateOne({_id:userDeleteArticle._id},{articles:array})
+  await userModel.updateOne({_id:userDeleteArticle._id},{articles:array})
   /* for (let i=0; i<array.length; i++){
     if()
   } */
