@@ -33,8 +33,10 @@ var removeWishList = async (id) =>{
   console.log("delete",id,props.token);
   await fetch(`/wishlist-article/${id}/${props.token}`, {
   method: 'DELETE'
+  
 });
-
+var dataWishList = await data.json();
+setWishListUser(dataWishList.articles)
 }
 
 
