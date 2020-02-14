@@ -5,6 +5,7 @@ import { Input, Card, Icon} from 'antd';
 import Nav from './Nav';
 import { Modal, Button } from 'antd';
 // import {useParams} from 'react-router-dom'; 
+// console.log(props.match.params.id)   // autre manière d'accèder la propriété, let idsource = useParams().id
 
 const { Meta } = Card;
 
@@ -16,20 +17,27 @@ function ScreenArticlesBySource(props) {
 // METTRE A JOUR  LE DETAIL DES ARTICLES + search
   const [search,setSearch] = useState("");
   const [sourcesDetails,setSourcesDetails] = useState([]);
-  // console.log(props.match.params.id)   // autre manière d'accèder la propriété, let idsource = useParams().id
-
+  const [completeData,setCompleteData] = useState([]); // sauve une version complète des articles extraits de l'api
 
   useEffect( ()=> {
     async function detailNews () {
       var sourceDataAPI = await fetch(`https://newsapi.org/v2/top-headlines?sources=${props.match.params.id}&apiKey=a160ccf8b17f40afb9cfb3119f82d1eb`);
       var sourceData = await sourceDataAPI.json();
-      //Search work 
-      let filteredData = sourceData.articles.filter(obj =>(obj.title.includes(search))||(obj.description.includes(search))); // la recherche est inclue dans title ou description
-      setSourcesDetails(filteredData);
-      // sans la recherche : setSourcesDetails(sourceData.articles);
+      setCompleteData(sourceData.articles); // sauvegarde le résultat de l'API pour la recherche (revenir en arrière dans la recherche)
+      setSourcesDetails(sourceData.articles); // initialisation de la liste
+
   }
     detailNews();
-  },[search]) //actu au search (si on ne met pas de search - un tableau vierge suffirait)
+  },[])
+
+  
+  useEffect( ()=> { //au search on réassigne a source détail un tableau filtré à partir du tableau qui sauvegarde les résultats de l'api
+    async function Search () {
+        let filteredData = completeData.filter(obj =>(obj.title.includes(search))||(obj.description.includes(search))); // la recherche est inclue dans title ou description
+        setSourcesDetails(filteredData);
+  }
+    Search();
+  },[search])
 
 
 
@@ -99,7 +107,7 @@ var handleCancel = (e) => {
         <img
             alt={obj.title}
             src={obj.urlToImage}
-            onClick= {() => showModal(obj.title,obj.description,obj.urlToImage)}
+            onClick= {() => showModal(obj.title,obj.description,obj.urlToImage,obj.url)}
             style = {{
               cursor:"pointer",
               height:"165px",

@@ -7,10 +7,12 @@ import ScreenSource from './ScreenSource';
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom'; 
 import wishList from './reducers/like.reducer';
 import token from './reducers/token.reducer';
+import language from './reducers/language.reducer';
+
 
 import {Provider} from 'react-redux';
 import {createStore, combineReducers}  from 'redux';
-const store = createStore(combineReducers({wishList,token}), window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
+const store = createStore(combineReducers({wishList,token,language}), window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
 
 function App() {
 

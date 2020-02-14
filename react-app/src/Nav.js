@@ -2,9 +2,10 @@ import React from 'react';
 import './App.css';
 import {Menu, Icon} from 'antd';
 import { Link } from "react-router-dom";
+import {connect} from 'react-redux';
 
 
-function Nav() {
+function Nav(props) {
 
   return (
     <nav >
@@ -26,8 +27,10 @@ function Nav() {
         </Menu.Item>
 
         <Menu.Item key="app">
-          <Icon type="logout" />
-          Logout
+          <Link onClick= {() => props.deleteToken()}>
+            <Icon type="logout" />
+            Logout
+          </Link>
         </Menu.Item>
 
       </Menu>
@@ -35,4 +38,20 @@ function Nav() {
   );
 }
 
-export default Nav;
+
+function mapDispatchToProps(dispatch) {
+  return {
+    deleteToken: function() { 
+      dispatch( {
+        type: 'kill-token',
+    } ) 
+  }
+  }
+}
+
+
+
+export default connect(
+  null, 
+  mapDispatchToProps
+)(Nav);

@@ -8,7 +8,7 @@ const { Meta } = Card;
 
 function ScreenMyArticles(props) {
 
- 
+ console.log("wl",props.wishList)
 // Génère la liste de mes articles 
   let articleWishLIst = props.wishList.map((obj,i) => {
 
@@ -31,12 +31,12 @@ function ScreenMyArticles(props) {
             cursor:"pointer",
             height:"165px",
           }}
-          onClick= {() => showModal(obj.title,obj.description,obj.urlToImage)}
+          onClick= {() => showModal(obj.title,obj.description,obj.image,obj.url)}
       />
       }
       actions={[
           <Icon type="delete" key="ellipsis" style = {{cursor:"pointer"}} onClick= {() => props.deleteFunction(obj.title)}/>,
-          <Icon type="read" key="ellipsis2" style = {{cursor:"pointer"}} onClick= {() => showModal(obj.title,obj.description,obj.urlToImage)}/>,
+          <Icon type="read" key="ellipsis2" style = {{cursor:"pointer"}} onClick= {() => showModal(obj.title,obj.description,obj.image,obj.url)}/>,
       ]}
     >
 
@@ -66,6 +66,7 @@ var showModal = (title,description,image,url) => {
   setContenu(description);
   setImage(image);
   setUrl(url);
+  console.log(title,description,image,url)
 };
 
 var  handleOk = (e)  => {

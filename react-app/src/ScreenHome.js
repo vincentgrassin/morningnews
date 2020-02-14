@@ -21,6 +21,8 @@ function ScreenHome(props) {
 
 //gestion sign up >>>> envoi au back les champs de signup (récupéré par button) et met à jour les états (islogin, message et token)
   var handleSignUp = async () =>{
+
+
     if((email=="")||(password=="")||(userName=="")) {
       setMessageSignUp("Champs requis !")
     }
@@ -37,9 +39,9 @@ function ScreenHome(props) {
         });
   
         let dataJson = await data.json();
-        setIsLogged(dataJson.result);
-        setMessageSignUp(dataJson.message); // recupere message de log
         props.saveToken(dataJson.tokenUser); //enregistre le token dans le store
+        setMessageSignUp(dataJson.message); // recupere message de log
+        setIsLogged(dataJson.result);
         console.log("signup Json",dataJson)
 
       }
@@ -63,9 +65,9 @@ function ScreenHome(props) {
       });
 
       let dataJson = await data.json();
-      setIsLogged(dataJson.result);
-      setMessageSignIn(dataJson.message)
       props.saveToken(dataJson.tokenUser);
+      setMessageSignIn(dataJson.message)
+      setIsLogged(dataJson.result);
       console.log("signin Json",dataJson)
     }
   }
