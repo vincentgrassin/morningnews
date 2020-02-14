@@ -166,7 +166,11 @@ router.delete('/wishlist-article/:_id/:token', async function (req,res,next){
   
   console.log("TCL: userDeleteArticle", userDeleteArticle)
   console.log(req.params)
-res.json({userDeleteArticle})
+
+  var sendUser= await userModel.findOne({token:req.params.token}).populate('articles').exec()
+  console.log("TCL: sendUser", sendUser)
+  
+res.json({sendUser})
   
 })
 
