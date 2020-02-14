@@ -9,20 +9,9 @@ const { Meta } = Card;
 function ScreenMyArticles(props) {
 
   const [wishListUser,setWishListUser] = useState([])
-  // var wishListUser = [
-  //   {
-  //   title:"Test1",
-  //   description:"descriptionoooo",
-  //   img:"img",
-  //   url:"http://url"},
-  //   {
-  //   title:"Test2",
-  //   description:"descriptionoooo",
-  //   img:"img",
-  //   url:"http://url"},
-  // ]
+ 
 
-// appel à la liste des article en WL
+// Appel à la liste des articles en WL au chargement de la page
 
 useEffect(() => {
   async function getWishList () {
@@ -41,12 +30,12 @@ useEffect(() => {
 
 
 // delete de la wishlist à la liste des article en WL
-// var removeWishList = async (title) =>{ 
-//   await fetch(`/wishlist-movie/${title}`, {
-//   method: 'DELETE'
-// });
+var removeWishList = async (title) =>{ 
+  await fetch(`/wishlist-article/${title}/${props.token}`, {
+  method: 'DELETE'
+});
 
-// }
+}
 
 
 // Génère la liste de mes articles 
@@ -75,7 +64,7 @@ useEffect(() => {
       />
       }
       actions={[
-          <Icon type="delete" key="ellipsis" style = {{cursor:"pointer"}} onClick= {() => props.deleteFunction(obj.title)}/>,
+          <Icon type="delete" key="ellipsis" style = {{cursor:"pointer"}} onClick= {() => removeWishList(obj.title)}/>,
           <Icon type="read" key="ellipsis2" style = {{cursor:"pointer"}} onClick= {() => showModal(obj.title,obj.description,obj.img,obj.url)}/>,
       ]}
     >
