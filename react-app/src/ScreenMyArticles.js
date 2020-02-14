@@ -28,11 +28,10 @@ useEffect(() => {
   getWishList(); 
 },[])
 
-
 // delete de la wishlist à la liste des article en WL
-var removeWishList = async (title) =>{ 
-  console.log("delete",title,props.token);
-  await fetch(`/wishlist-article/${title}/${props.token}`, {
+var removeWishList = async (id) =>{ 
+  console.log("delete",id,props.token);
+  await fetch(`/wishlist-article/${id}/${props.token}`, {
   method: 'DELETE'
 });
 
@@ -65,7 +64,7 @@ var removeWishList = async (title) =>{
       />
       }
       actions={[
-          <Icon type="delete" key="ellipsis" style = {{cursor:"pointer"}} onClick= {() => removeWishList(obj.title)}/>,
+          <Icon type="delete" key="ellipsis" style = {{cursor:"pointer"}} onClick= {() => removeWishList(obj._id)}/>,
           <Icon type="read" key="ellipsis2" style = {{cursor:"pointer"}} onClick= {() => showModal(obj.title,obj.description,obj.img,obj.url)}/>,
       ]}
     >
