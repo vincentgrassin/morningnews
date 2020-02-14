@@ -149,11 +149,24 @@ router.post('/add-article', async function(req,res,next){
 
 // Route Delete pour suprimer un article de la wishList
 
-router.delete('/wishlist-article/:title/:token', async function (req,res,next){
+router.delete('/wishlist-article/:_id/:token', async function (req,res,next){
   var userDeleteArticle = await userModel.findOne({token:req.params.token})
-  console.log("TCL: userDeleteArticle", userDeleteArticle)
-  
 
+  var array = userDeleteArticle.articles;
+  console.log("TCL: array", array)
+
+  var index = array.indexOf(req.params._id);
+  array.splice(index,1);
+  console.log("TCL: array après Splice", array)
+  
+  await userDeleteArticle.updateOne({_id:userDeleteArticle._id},{articles:array})
+  /* for (let i=0; i<array.length; i++){
+    if()
+  } */
+  
+  console.log("TCL: userDeleteArticle", userDeleteArticle)
+  console.log(req.params)
+res.json({userDeleteArticle})
   
 })
 
