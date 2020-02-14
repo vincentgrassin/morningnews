@@ -109,14 +109,16 @@ router.post('/sign-in', async function(req, res, next) {
 
 // Route pour récupérer le POST des différents article ajouté
 router.post('/add-article', async function(req,res,next){
-
+    console.log("body",req.body)
     var userAddArticle = await userModel.findOne({token:req.body.token}).populate('articles').exec();
     var listeArticle = await articleModel.findOne({title:req.body.title})
     var isInWishListDb = false;
     for(let i =0;i<userAddArticle.articles.length;i++) {
-        if(req.body.title == userAddArticle.articles[i].title) {
-          isInWishListDb = true;
-         }
+        if(userAddArticle.articles[i].title !== null) {
+          if(req.body.title == userAddArticle.articles[i].title) {
+            isInWishListDb = true;
+           }
+        } 
       }
 
     if(isInWishListDb==false) {
@@ -131,13 +133,12 @@ router.post('/add-article', async function(req,res,next){
     
         var articleSaved = await newArticle.save();
         idArticles = articleSaved._id
-        console.log("TCL: idArticles", idArticles)
 
       } else {
-        var idArticle = listeArticle._id
+        idArticles = listeArticle._id
       }
     var array = userAddArticle.articles;
-    array.push(idArticle);
+    array.push(idArticles);
     await userModel.updateOne({_id:userAddArticle._id},{articles:array})
 
   
