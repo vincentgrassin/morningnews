@@ -4,6 +4,8 @@ import './App.css';
 import { Input, Card, Icon} from 'antd';
 import Nav from './Nav';
 import { Modal, Button } from 'antd';
+import { Link,Redirect } from "react-router-dom";
+
 // import {useParams} from 'react-router-dom'; 
 // console.log(props.match.params.id)   // autre manière d'accèder la propriété, let idsource = useParams().id
 
@@ -19,6 +21,8 @@ function ScreenArticlesBySource(props) {
   const [sourcesDetails,setSourcesDetails] = useState([]);
   const [completeData,setCompleteData] = useState([]); // sauve une version complète des articles extraits de l'api
 
+
+  // AFFICHAGE  du contenu de chaque source à l'initialisation
   useEffect( ()=> {
     async function detailNews () {
       var sourceDataAPI = await fetch(`https://newsapi.org/v2/top-headlines?sources=${props.match.params.id}&apiKey=a160ccf8b17f40afb9cfb3119f82d1eb`);
@@ -31,18 +35,22 @@ function ScreenArticlesBySource(props) {
   },[])
 
 
-  async function AddtoWishList (token,title,description,image,url,bool) {
+    // AJOUT d'un articke en wish list (envoi des infos à la db) manque un bool pour bien gérer la séléction des pouces 
+  async function AddtoWishList (token,title,description,image,url,bool,language) {
 
     console.log(bool)
     await fetch('/add-article', { 
     method: 'POST',
     headers: {'Content-Type':'application/x-www-form-urlencoded'},
-    body: `title=${title}&description=${description}&img=${image}&url=${url}&token=${token}`
+    body: `title=${title}&description=${description}&img=${image}&url=${url}&token=${token}&language=${language}`
   });
   
  }
 
-  
+ 
+
+
+  // OUTIL DE RESEARCH - a chaque click filtre un tableau de data conservé et réassigne la valeur de l'état
   useEffect( ()=> { //au search on réassigne a source détail un tableau filtré à partir du tableau qui sauvegarde les résultats de l'api
     async function Search () {
         let filteredData = completeData.filter(obj =>(obj.title.includes(search))||(obj.description.includes(search))); // la recherche est inclue dans title ou description
@@ -53,26 +61,7 @@ function ScreenArticlesBySource(props) {
 
 
 
-// gerer les boutons rouges
-const [wishListUser,setWishListUser] = useState([])
-useEffect(() => {
-  async function getWishList () {
-    var data = await fetch('/wishlist-article', { 
-      method: 'POST',
-      headers: {'Content-Type':'application/x-www-form-urlencoded'},
-      body: `token=${props.token}`
-    });
-    
-    var dataWishList = await data.json();
-   setWishListUser(dataWishList.articles)
-  
-  }
-  getWishList(); 
-},[])
-
-console.log(wishListUser)
-
-// GERER LA MODAL
+// GESTION de la modal
 
 const [isVisible,setIsVisible] = useState(false);
 const [title,setTitle] = useState("");
@@ -100,6 +89,24 @@ var handleCancel = (e) => {
 };
 
 
+
+  // RECUPERATION DE LA WISHLIST pour affichage des pouces clickés rouge
+  const [wishListUser,setWishListUser] = useState([])
+  useEffect(() => {
+    async function getWishList () {
+      var data = await fetch('/wishlist-article', { 
+        method: 'POST',
+        headers: {'Content-Type':'application/x-www-form-urlencoded'},
+        body: `token=${props.token}`
+      });
+      
+      var dataWishList = await data.json();
+     setWishListUser(dataWishList.articles)
+    
+    }
+    getWishList(); 
+  },[])
+  
 
 // CREER LA LISTE DE CARDS INCLUANT LA MODAL
 
@@ -144,7 +151,7 @@ var handleCancel = (e) => {
         />
         }
         actions={[
-            <Icon type="like" key="ellipsis" style = {styleLike}  onClick= {() => AddtoWishList(props.token,obj.title,obj.description,obj.urlToImage,obj.url,isInWishLIist)}/>,
+            <Icon type="like" key="ellipsis" style = {styleLike}  onClick= {() => AddtoWishList(props.token,obj.title,obj.description,obj.urlToImage,obj.url,isInWishLIist,props.match.params.language)}/>,
             <Icon type="read" key="ellipsis2" style = {{cursor:"pointer"}}  onClick= {() => showModal(obj.title,obj.description,obj.urlToImage,obj.url)}/>,
         ]}
       >
@@ -163,6 +170,14 @@ var handleCancel = (e) => {
 
 
 // RETURN GLOBAL DU COMPOSANT
+
+if(props.token === null) {
+  return(
+    <Redirect to='/' />
+  )
+
+} 
+else {
 
   return (
     <div>
@@ -198,8 +213,11 @@ var handleCancel = (e) => {
       </div>
   );
 }
+}
 
 
+
+// INUTILE envoi au store des informations (à supprimer car géré uniquement en db maintenant)
 function mapDispatchToProps(dispatch) {
   return {
     LikeFunction: function(title,description,image,url,bool) { 
@@ -227,6 +245,7 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
+// Recup info
 function mapStateToProps(state) {
   return { 
     wishList: state.wishList,

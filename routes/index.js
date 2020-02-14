@@ -108,6 +108,7 @@ router.post('/sign-in', async function(req, res, next) {
 
 // Route pour récupérer le POST des différents article ajouté
 router.post('/add-article', async function(req,res,next){
+  console.log(req.body)
     var userAddArticle = await userModel.findOne({token:req.body.token}).populate('articles').exec();
     var listeArticle = await articleModel.findOne({title:req.body.title})
     var isInWishListDb = false;
@@ -126,7 +127,8 @@ router.post('/add-article', async function(req,res,next){
           title: req.body.title,
           description: req.body.description,
           img: req.body.img,
-          url: req.body.url   
+          url: req.body.url,
+          language: req.body.language
       })
     
         var articleSaved = await newArticle.save();

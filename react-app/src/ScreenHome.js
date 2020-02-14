@@ -19,9 +19,8 @@ function ScreenHome(props) {
   const [passwordSignIn,setPasswordSignIn] = useState("");
   const [messageSignIn,setMessageSignIn] = useState("");
 
-//gestion sign up >>>> envoi au back les champs de signup (récupéré par button) et met à jour les états (islogin, message et token)
+//GESTION SIGN UP >>>> envoi au back les champs de signup (récupéré par button) et met à jour les états (islogin, message et token)
   var handleSignUp = async () =>{
-
 
     if((email=="")||(password=="")||(userName=="")) {
       setMessageSignUp("Champs requis !")
@@ -39,7 +38,7 @@ function ScreenHome(props) {
         });
   
         let dataJson = await data.json();
-        props.saveToken(dataJson.tokenUser); //enregistre le token dans le store
+        props.saveToken(dataJson.tokenUser); //enregistre le token dans le store - le token sert à toute les étape dans la db pour vérifier le user connecté (+redirect)
         setMessageSignUp(dataJson.message); // recupere message de log
         setIsLogged(dataJson.result);
 
@@ -51,7 +50,7 @@ function ScreenHome(props) {
     }
   }
 
-//gestion sign in >>>> envoi au back les champs de signin (récupéré par button) et met à jour les états (islogin, message et token)
+//GESTION SIGN IN >>>> envoi au back les champs de signin (récupéré par button) et met à jour les états (islogin, message et token)
   var handleSignIn = async () =>{
     if((emailSignIn=="")||(passwordSignIn=="")) {
       setMessageSignIn("Champs requis !")
@@ -64,7 +63,7 @@ function ScreenHome(props) {
       });
 
       let dataJson = await data.json();
-      props.saveToken(dataJson.tokenUser);
+      props.saveToken(dataJson.tokenUser); ////enregistre le token dans le store 
       setMessageSignIn(dataJson.message)
       setIsLogged(dataJson.result);
     }
@@ -129,7 +128,7 @@ function ScreenHome(props) {
 
 
 
-//envoi action & data aux reducers
+// SAVE TOKEN - pour utilisation dans toutes les pages
 function mapDispatchToProps(dispatch) {
   return {
     saveToken: function(token) { 
@@ -142,14 +141,8 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-//recup varible du store 
-function mapStateToProps(state) {
-  return { 
-    token: state.token,
-  }
-}
 
 export default connect(
-  mapStateToProps, 
+  null, 
   mapDispatchToProps
 )(ScreenHome);

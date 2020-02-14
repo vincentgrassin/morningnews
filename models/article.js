@@ -8,6 +8,7 @@ var articlesSchema = mongoose.Schema({
     description: String,
     img: String,
     url: String,
+    language: String
 })
 
 module.exports = mongoose.model('articles', articlesSchema)

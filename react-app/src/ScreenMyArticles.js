@@ -2,16 +2,17 @@ import React, {useState,useEffect} from 'react';
 import {connect} from 'react-redux';
 import './App.css';
 import { Modal,Card, Icon} from 'antd';
-import Nav from './Nav'
+import Nav from './Nav';
+import {Redirect } from 'react-router-dom';
+
 
 const { Meta } = Card;
 
 function ScreenMyArticles(props) {
 
   const [wishListUser,setWishListUser] = useState([])
- 
 
-// Appel à la liste des articles en WL au chargement de la page
+// AFFICHAGE DE LA WISHLIST au chagement de la page
 
 useEffect(() => {
   async function getWishList () {
@@ -28,21 +29,18 @@ useEffect(() => {
   getWishList(); 
 },[])
 
-// delete de la wishlist à la liste des article en WL
+// DELETE de la wishlist (et réassignement de létat wishlist au click
 var removeWishList = async (id) =>{ 
-  console.log("delete",id,props.token);
  var data = await fetch(`/wishlist-article/${id}/${props.token}`, {
   method: 'DELETE'
   
 });
-var dataWishList = await data.json();
-console.log("delete fetch",dataWishList.sendUser.articles)
-setWishListUser(dataWishList.sendUser.articles)
-}
+  var dataWishList = await data.json();
+  setWishListUser(dataWishList.sendUser.articles)
+  }
 
-console.log("wl",wishListUser)
 
-// Génère la liste de mes articles 
+//CREATION DES CARDS wishlist
   let articleWishLIst = wishListUser.map((obj,i) => {
 
     return(
@@ -85,7 +83,7 @@ console.log("wl",wishListUser)
 })
 
 
-//Gestion de la modal
+//GESTIon de la modal
 
 const [isVisible,setIsVisible] = useState(false);
 const [title,setTitle] = useState("");
@@ -114,7 +112,7 @@ var handleCancel = (e) => {
 
 
 
-// Gestion du message pas d'articles
+// GESTION DU MESSAGE EMPTY
 if(wishListUser.length>0) {
   var isEmpty = false;
 }else {
@@ -122,7 +120,28 @@ if(wishListUser.length>0) {
 }
 
 
+// GESTION DU FILTRE DE LANGUE (réassigne l'état de la wish list)
+var filterLanguage = async (lg) =>{
+  var data = await fetch('/wishlist-article', { 
+    method: 'POST',
+    headers: {'Content-Type':'application/x-www-form-urlencoded'},
+    body: `token=${props.token}`
+    });
+    
+  var dataWishList = await data.json();
+  var filteredArray = dataWishList.articles.filter(obj => (obj.language == lg))
+  setWishListUser(filteredArray)
+}
+
+
 // RETURN GLOBAL DE LA PAGE
+if(props.token === null) {
+  return(
+    <Redirect to='/' />
+  )
+
+} 
+else {
 
   return (
     <div>
@@ -130,6 +149,10 @@ if(wishListUser.length>0) {
             <Nav/>
 
             <div className="Banner"/>
+            <div className ="flags">
+                <img src = "/images/french.png" style = {{height:"40px",paddingRight:"5px", cursor:"pointer"}} onClick= {() => filterLanguage("fr")}/>
+                <img src = "/images/uk2.png" style = {{height:"40px",paddingLeft:"5px", cursor:"pointer"}} onClick= {() => filterLanguage("gb")}/>
+            </div>
                 
             {isEmpty? 
               <div style = {{display:"flex", flexDirection:"column", justifyContent:"center", marginTop:'30px',alignItems:"center"}}>
@@ -164,11 +187,14 @@ if(wishListUser.length>0) {
 
       </div>
   );
+  }
 }
 
 
 // ENVOI ET RECUP AUX REDUCERS
 
+
+// Inutile (le delete passe par la db)
 function mapDispatchToProps(dispatch) {
   return {
     deleteFunction: function(title) { 
@@ -180,6 +206,7 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
+// RECUP TOKEN
 function mapStateToProps(state) {
   return { 
     wishList: state.wishList,
