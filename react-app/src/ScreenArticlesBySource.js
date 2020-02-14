@@ -30,6 +30,17 @@ function ScreenArticlesBySource(props) {
     detailNews();
   },[])
 
+
+  async function AddtoWishList (token,title,description,image,url,bool) {
+    console.log(token,title,description,url,image);
+    await fetch('/add-article', { 
+    method: 'POST',
+    headers: {'Content-Type':'application/x-www-form-urlencoded'},
+    body: `title=${title}&description=${description}&img=${image}&url=${url}&token=${token}`
+  });
+  
+ }
+
   
   useEffect( ()=> { //au search on réassigne a source détail un tableau filtré à partir du tableau qui sauvegarde les résultats de l'api
     async function Search () {
@@ -42,6 +53,15 @@ function ScreenArticlesBySource(props) {
 
 
 
+
+// gerer les boutons rouges
+useEffect(async () => {
+  var data = await fetch("/wishlist-article");
+  var dataWishList = await data.json();
+  console.log("dataWL",dataWishList)
+},[])
+
+
 // GERER LA MODAL
 
 const [isVisible,setIsVisible] = useState(false);
@@ -49,7 +69,6 @@ const [title,setTitle] = useState("");
 const [contenu,setContenu] = useState("");
 const [image,setImage] = useState("");
 const [url,setUrl] = useState("");
-
 
 
 var showModal = (title,description,image,url) => {
@@ -71,26 +90,27 @@ var handleCancel = (e) => {
 };
 
 
+
 // CREER LA LISTE DE CARDS INCLUANT LA MODAL
 
  let articleDetails = sourcesDetails.map((obj,i) => {
 
-      var isInWishLIist = false; 
-      for(let j=0;j<props.wishList.length;j++){
-        if(props.wishList[j].title==obj.title){
-          isInWishLIist = true
-        }
-      }
-      var styleLike;
-      if(isInWishLIist == true) {
-        var styleLike = {
-          // cursor:"pointer",
-          color:"red"
-      }} else {
-            styleLike = {
-              cursor:"pointer",
-            }
-        }
+      // var isInWishLIist = false; 
+      // for(let j=0;j<props.wishList.length;j++){
+      //   if(props.wishList[j].title==obj.title){
+      //     isInWishLIist = true
+      //   }
+      // }
+      // var styleLike;
+      // if(isInWishLIist == true) {
+      //   var styleLike = {
+      //     // cursor:"pointer",
+      //     color:"red"
+      // }} else {
+      //       styleLike = {
+      //         cursor:"pointer",
+      //       }
+      //   }
       
       return(
       <div  key = {i} style={{display:'flex',justifyContent:'center'}}>
@@ -115,7 +135,7 @@ var handleCancel = (e) => {
         />
         }
         actions={[
-            <Icon type="like" key="ellipsis" style = {styleLike}  onClick= {() => props.LikeFunction(obj.title,obj.description,obj.urlToImage,obj.url,isInWishLIist)}/>,
+            <Icon type="like" key="ellipsis" /*style = {styleLike}*/  onClick= {() => AddtoWishList(props.token,obj.title,obj.description,obj.urlToImage,obj.url,true)}/>,
             <Icon type="read" key="ellipsis2" style = {{cursor:"pointer"}}  onClick= {() => showModal(obj.title,obj.description,obj.urlToImage,obj.url)}/>,
         ]}
       >
@@ -201,6 +221,7 @@ function mapDispatchToProps(dispatch) {
 function mapStateToProps(state) {
   return { 
     wishList: state.wishList,
+    token:state.token
   }
 }
 

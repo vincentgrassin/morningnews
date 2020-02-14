@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import {connect} from 'react-redux';
 import './App.css';
 import { Modal,Card, Icon} from 'antd';
@@ -8,9 +8,42 @@ const { Meta } = Card;
 
 function ScreenMyArticles(props) {
 
+
  console.log("wl",props.wishList)
+
+  var wishListUser = [
+    {
+    title:"Test1",
+    description:"descriptionoooo",
+    img:"img",
+    url:"http://url"},
+    {
+    title:"Test2",
+    description:"descriptionoooo",
+    img:"img",
+    url:"http://url"},
+  ]
+
+// appel à la liste des article en WL
+
+useEffect(async () => {
+  var data = await fetch("/wishlist-article");
+  var dataWishList = await data.json();
+  console.log("dataWL",dataWishList)
+},[])
+
+
+// delete de la wishlist à la liste des article en WL
+var removeWishList = async (title) =>{ 
+  await fetch(`/wishlist-movie/${title}`, {
+  method: 'DELETE'
+});
+
+}
+
+
 // Génère la liste de mes articles 
-  let articleWishLIst = props.wishList.map((obj,i) => {
+  let articleWishLIst = wishListUser.map((obj,i) => {
 
     return(
     <div  key = {i} style={{display:'flex',justifyContent:'center'}}>
@@ -26,17 +59,17 @@ function ScreenMyArticles(props) {
       cover={
       <img
           alt=""
-          src= {obj.image}
+          src= {obj.img}
           style = {{
             cursor:"pointer",
             height:"165px",
           }}
-          onClick= {() => showModal(obj.title,obj.description,obj.image,obj.url)}
+          onClick= {() => showModal(obj.title,obj.description,obj.img,obj.url)}
       />
       }
       actions={[
           <Icon type="delete" key="ellipsis" style = {{cursor:"pointer"}} onClick= {() => props.deleteFunction(obj.title)}/>,
-          <Icon type="read" key="ellipsis2" style = {{cursor:"pointer"}} onClick= {() => showModal(obj.title,obj.description,obj.image,obj.url)}/>,
+          <Icon type="read" key="ellipsis2" style = {{cursor:"pointer"}} onClick= {() => showModal(obj.title,obj.description,obj.img,obj.url)}/>,
       ]}
     >
 
@@ -82,7 +115,7 @@ var handleCancel = (e) => {
 
 
 // Gestion du message pas d'articles
-if(props.wishList.length>0) {
+if(wishListUser.length>0) {
   var isEmpty = false;
 }else {
   var isEmpty = true;
