@@ -21,7 +21,7 @@ useEffect( ()=> {
     body: `token=${props.token}`
   });
   var dataJson = await data.json();
-  console.log(dataJson)
+  LanguageChange(dataJson.langue);
 }
   getLanguage();
 },[])

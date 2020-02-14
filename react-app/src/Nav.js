@@ -7,7 +7,16 @@ import {connect} from 'react-redux';
 
 function Nav(props) {
 
-  
+  var changeLangue = () => {
+    await fetch('/logout', { 
+        method: 'POST',
+        headers: {'Content-Type':'application/x-www-form-urlencoded'},
+        body: `token=${props.token}&language=${props.language}`
+      });
+    
+    props.deleteToken()
+
+  }
 
   return (
     <nav >
@@ -29,7 +38,7 @@ function Nav(props) {
         </Menu.Item>
 
         <Menu.Item key="app">
-          <Link onClick= {() => props.deleteToken()}>
+          <Link onClick= {() => changeLangue()}>
             <Icon type="logout" />
             Logout
           </Link>
@@ -52,8 +61,15 @@ function mapDispatchToProps(dispatch) {
 }
 
 
+function mapStateToProps(state) {
+  return { 
+    language: state.language,
+    token:state.token
+  }
+}
+
 
 export default connect(
-  null, 
+  mapStateToProps, 
   mapDispatchToProps
 )(Nav);
