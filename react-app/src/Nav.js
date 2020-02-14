@@ -6,8 +6,8 @@ import {connect} from 'react-redux';
 
 
 function Nav(props) {
-
   var changeLangue = async () => {
+
     await fetch('/logout', { 
         method: 'POST',
         headers: {'Content-Type':'application/x-www-form-urlencoded'},
@@ -30,7 +30,7 @@ function Nav(props) {
 
         </Menu.Item>
 
-        <Menu.Item key="test">
+        <Menu.Item key="test"> 
           <div style={{display: "flex", alignItems: "center"}} >
             <Icon type="read" />
             <Link style={{color: "#FFFFFF"}} to="/screenmyarticles">My Articles</Link>
@@ -53,6 +53,7 @@ function Nav(props) {
 function mapDispatchToProps(dispatch) {
   return {
     deleteToken: function() { 
+      console.log("hellokilltoken")
       dispatch( {
         type: 'kill-token',
     } ) 

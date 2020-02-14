@@ -42,7 +42,6 @@ function ScreenHome(props) {
         props.saveToken(dataJson.tokenUser); //enregistre le token dans le store
         setMessageSignUp(dataJson.message); // recupere message de log
         setIsLogged(dataJson.result);
-        console.log("signup Json",dataJson)
 
       }
       else {
@@ -68,7 +67,6 @@ function ScreenHome(props) {
       props.saveToken(dataJson.tokenUser);
       setMessageSignIn(dataJson.message)
       setIsLogged(dataJson.result);
-      console.log("signin Json",dataJson)
     }
   }
 

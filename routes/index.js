@@ -67,7 +67,6 @@ router.post('/sign-in', async function(req, res, next) {
     { email: req.body.email,
      }
  )
- console.log("checkuser",checkUser);
   
      if(checkUser !== null) {
   // COMPARE MOT DE PASSSE AVEC CRYPT JS
@@ -103,14 +102,12 @@ router.post('/sign-in', async function(req, res, next) {
        result = false;
        message = "nom d'utilisateur non reconnu"
      }
-     console.log(tokenUser)
      res.send({result,message,tokenUser});
 
 });
 
 // Route pour récupérer le POST des différents article ajouté
 router.post('/add-article', async function(req,res,next){
-    console.log("body",req.body)
     var userAddArticle = await userModel.findOne({token:req.body.token}).populate('articles').exec();
     var listeArticle = await articleModel.findOne({title:req.body.title})
     var isInWishListDb = false;
@@ -154,22 +151,18 @@ router.delete('/wishlist-article/:_id/:token', async function (req,res,next){
   var userDeleteArticle = await userModel.findOne({token:req.params.token})
 
   var array = userDeleteArticle.articles;
-  console.log("TCL: array", array)
 
   var index = array.indexOf(req.params._id);
   array.splice(index,1);
-  console.log("TCL: array après Splice", array)
   
   await userModel.updateOne({_id:userDeleteArticle._id},{articles:array})
   /* for (let i=0; i<array.length; i++){
     if()
   } */
   
-  console.log("TCL: userDeleteArticle", userDeleteArticle)
-  console.log(req.params)
+
 
   var sendUser= await userModel.findOne({token:req.params.token}).populate('articles').exec()
-  console.log("TCL: sendUser", sendUser)
   
 res.json({sendUser})
   
@@ -184,13 +177,16 @@ router.post('/wishlist-article', async function(req, res, next) {
 
 router.post('/langue', async function (req,res,next) {
   var userLangue  = await userModel.findOne({token:req.body.token})
-  console.log("TCL: userLangue", userLangue.langue)
+
   
   res.json({langue:userLangue.langue})
 })
 
 router.post('/logout', async function (req,res,next){
-  var userLogout = await userModel.updateOne({token:req.body.token},{langue:req.body.language})
+
+  var userLogout = await userModel.updateOne({token:req.body.token},{langue:req.body.language});
+  res.json({result:true})
+
 })
 
 module.exports = router;
