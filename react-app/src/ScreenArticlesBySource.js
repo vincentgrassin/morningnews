@@ -32,7 +32,8 @@ function ScreenArticlesBySource(props) {
 
 
   async function AddtoWishList (token,title,description,image,url,bool) {
-    console.log(token,title,description,url,image);
+
+    console.log(bool)
     await fetch('/add-article', { 
     method: 'POST',
     headers: {'Content-Type':'application/x-www-form-urlencoded'},
@@ -143,7 +144,7 @@ var handleCancel = (e) => {
         />
         }
         actions={[
-            <Icon type="like" key="ellipsis" style = {styleLike}  onClick= {() => AddtoWishList(props.token,obj.title,obj.description,obj.urlToImage,obj.url,true)}/>,
+            <Icon type="like" key="ellipsis" style = {styleLike}  onClick= {() => AddtoWishList(props.token,obj.title,obj.description,obj.urlToImage,obj.url,isInWishLIist)}/>,
             <Icon type="read" key="ellipsis2" style = {{cursor:"pointer"}}  onClick= {() => showModal(obj.title,obj.description,obj.urlToImage,obj.url)}/>,
         ]}
       >
