@@ -115,13 +115,22 @@ router.post('/add-article', async function(req,res,next){
       img: req.body.img,
       url: req.body.url   
   })
+
+  console.log(req.body)
   var articleSaved = await newArticle.save();
-  var userAddArticle = await userModel.findOne(req.body.token) //On récupére le token de l'utilisateur pour lui pusher les ID des articles
+  var userAddArticle = await userModel.findOne({token:req.body.token}) //On récupére le token de l'utilisateur pour lui pusher les ID des articles
+  console.log("TCL: articleSaved", articleSaved)
+  
+  var array = userAddArticle.articles
+  console.log("TCL: array", array)
+  
+  await userModel.updateOne({_id:userAddArticle._id},{articles:array.push(articleSaved._id)})
   console.log("TCL: userAddArticle", userAddArticle)
   
-  userAddArticle.articles.push(articleSaved._id)
+  
+  /* userAddArticle.articles.push(articleSaved._id) */
 
-
+  res.json({userAddArticle})
 });
 
 
