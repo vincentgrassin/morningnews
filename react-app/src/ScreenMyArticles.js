@@ -8,29 +8,32 @@ const { Meta } = Card;
 
 function ScreenMyArticles(props) {
 
-
- console.log("wl",props.wishList)
-
-  var wishListUser = [
-    {
-    title:"Test1",
-    description:"descriptionoooo",
-    img:"img",
-    url:"http://url"},
-    {
-    title:"Test2",
-    description:"descriptionoooo",
-    img:"img",
-    url:"http://url"},
-  ]
+  const [wishListUser,setWishListUser] = useState([])
+  // var wishListUser = [
+  //   {
+  //   title:"Test1",
+  //   description:"descriptionoooo",
+  //   img:"img",
+  //   url:"http://url"},
+  //   {
+  //   title:"Test2",
+  //   description:"descriptionoooo",
+  //   img:"img",
+  //   url:"http://url"},
+  // ]
 
 // appel à la liste des article en WL
 
 useEffect(() => {
   async function getWishList () {
-    var data = await fetch("/wishlist-article");
+    var data = await fetch('/wishlist-article', { 
+      method: 'POST',
+      headers: {'Content-Type':'application/x-www-form-urlencoded'},
+      body: `token=${props.token}`
+    });
+    
     var dataWishList = await data.json();
-    console.log("dataWL",dataWishList)
+   setWishListUser(dataWishList.articles)
   
   }
   getWishList(); 
@@ -38,12 +41,12 @@ useEffect(() => {
 
 
 // delete de la wishlist à la liste des article en WL
-var removeWishList = async (title) =>{ 
-  await fetch(`/wishlist-movie/${title}`, {
-  method: 'DELETE'
-});
+// var removeWishList = async (title) =>{ 
+//   await fetch(`/wishlist-movie/${title}`, {
+//   method: 'DELETE'
+// });
 
-}
+// }
 
 
 // Génère la liste de mes articles 
@@ -187,6 +190,7 @@ function mapDispatchToProps(dispatch) {
 function mapStateToProps(state) {
   return { 
     wishList: state.wishList,
+    token:state.token
   }
 }
 
